@@ -2,12 +2,13 @@
   <div class="main-container">
     @if(!selectedCharacter) {
 
-    <div class="search-wrapper" [class.escondido]="!mostrarBusca">
+    <div class="search-wrapper" [class.escondido]="!isSearchVisible">
       <ion-searchbar
         class="custom-search"
+        [value]="searchTerm"
         placeholder="Pesquisar personagem"
         (ionInput)="onSearch($event)"
-        debounce="300"
+        (ionClear)="onClear()"
       ></ion-searchbar>
     </div>
     @if(loading) {
@@ -19,7 +20,11 @@
     }
 
     <ion-list class="character-list">
-      <ion-item *ngFor="let c of characters" button (click)="showDetails(c)">
+      <ion-item
+        *ngFor="let c of characters; trackBy: trackByCharacterId"
+        button
+        (click)="showDetails(c)"
+      >
         <ion-thumbnail slot="start">
           <ion-img [src]="c.image" alt="{{c.name}}"></ion-img>
         </ion-thumbnail>
@@ -30,7 +35,10 @@
       </ion-item>
     </ion-list>
 
-    <ion-infinite-scroll (ionInfinite)="carregarMais($event)">
+    <ion-infinite-scroll
+      [disabled]="!nextUrl || loading"
+      (ionInfinite)="carregarMais($event)"
+    >
       <ion-infinite-scroll-content
         loadingSpinner="bubbles"
         loadingText="Carregando mais personagens..."
@@ -55,13 +63,13 @@
           <p><strong>Status:</strong> {{ selectedCharacter.status }}</p>
           <p><strong>Espécie:</strong> {{ selectedCharacter.species }}</p>
           <p><strong>Gênero:</strong> {{ selectedCharacter.gender }}</p>
-          <p><strong>Origem:</strong> {{ selectedCharacter.origin?.name }}</p>
+          <p><strong>Origem:</strong> {{ selectedCharacter.origin.name }}</p>
           <p>
-            <strong>Localização:</strong> {{ selectedCharacter.location?.name }}
+            <strong>Localização:</strong> {{ selectedCharacter.location.name }}
           </p>
           <p>
-            <strong>Episódios:</strong> {{ selectedCharacter.episode?.length ||
-            0 }}
+            <strong>Episódios:</strong> {{ selectedCharacter.episode.length || 0
+            }}
           </p>
         </div>
 
