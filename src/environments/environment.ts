@@ -5,13 +5,13 @@
 export const environment = {
   production: false,
   firebaseConfig: {
-    apiKey: 'AIzaSyB5O6D5oLp9k0fvgabFIvZgrfHnlGbrQaU',
-    authDomain: 'ionic-showcase-e025f.firebaseapp.com',
-    projectId: 'ionic-showcase-e025f',
-    storageBucket: 'ionic-showcase-e025f.firebasestorage.app',
-    messagingSenderId: '208067385326',
-    appId: '1:208067385326:web:b54ec344ca011fe028e0ff',
-  },
+    apiKey: process.env['FIREBASE_API_KEY'] || '',
+    authDomain: process.env['FIREBASE_AUTH_DOMAIN'] || '',
+    projectId: process.env['FIREBASE_PROJECT_ID'] || '',
+    storageBucket: process.env['FIREBASE_STORAGE_BUCKET'] || '',
+    messagingSenderId: process.env['FIREBASE_MESSAGING_SENDER_ID'] || '',
+    appId: process.env['FIREBASE_APP_ID'] || '',
+  }
 };
 
 /*
