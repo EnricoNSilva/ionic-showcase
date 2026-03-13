@@ -84,6 +84,12 @@ export class CadastroPage {
     try {
       await this.authService.register(this.email, this.senha);
 
+      await showTopToast(
+        this.toastCtrl,
+        'Cadastro realizado com sucesso!',
+        'success',
+      );
+
       // Mantem o mesmo comportamento do login ao entrar no app.
       this.navCtrl.navigateForward(['/tabs']);
     } catch (error: any) {

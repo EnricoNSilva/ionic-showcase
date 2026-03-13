@@ -5,7 +5,7 @@
   --placeholder-color: #aaa;
   --icon-color: #aaa;
   --border-radius: 12px;
-  padding-bottom: 16px;
+  padding-bottom: 8px;
 }
 
 .character-list {
@@ -124,4 +124,10 @@
 /* Barra de busca fixa no topo com animação de esconder/mostrar */
 .search-wrapper {
   padding-bottom: 0;
+
+  &.app-sticky-search {
+    /* Header ja ocupa o topo; remove compensacao extra de safe area aqui. */
+    margin: -16px -16px 12px -16px;
+    padding: 16px 16px 0 16px;
+  }
 }

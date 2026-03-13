@@ -55,16 +55,21 @@ export class RecuperarSenhaPage {
   async enviarRecuperacao() {
     this.removerFocoAtual();
 
-    if (this.email) {
-      // Cria a mensagem flutuante (Toast)
+    if (!this.email) {
       await showTopToast(
         this.toastCtrl,
-        'Se o e-mail estiver cadastrado, você receberá um link em instantes.',
-        'success',
+        'Por favor, informe seu e-mail.',
+        'danger',
       );
-
-      // Joga o usuário de volta pra tela de login
-      this.navCtrl.navigateBack('/login');
+      return;
     }
+
+    await showTopToast(
+      this.toastCtrl,
+      'Se o e-mail estiver cadastrado, você receberá um link em instantes.',
+      'success',
+    );
+
+    this.navCtrl.navigateBack('/login');
   }
 }
