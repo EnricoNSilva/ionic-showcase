@@ -18,6 +18,8 @@ import {
 } from 'ionicons/icons';
 import { blurActiveElement } from '../utils/dom.utils';
 import { showTopToast } from '../utils/toast.utils';
+import { AuthService } from '../services/auth.service';
+import { isValidEmail } from '../utils/validation.utils';
 
 @Component({
   selector: 'app-recuperar-senha',
@@ -37,6 +39,7 @@ import { showTopToast } from '../utils/toast.utils';
 export class RecuperarSenhaPage {
   email = '';
 
+  private readonly authService = inject(AuthService);
   private readonly navCtrl = inject(NavController);
   private readonly toastCtrl = inject(ToastController);
 
@@ -52,24 +55,54 @@ export class RecuperarSenhaPage {
     blurActiveElement();
   }
 
+  private async exibirErroRecuperarSenha(mensagem: string) {
+    await showTopToast(this.toastCtrl, mensagem, 'danger');
+  }
+
   async enviarRecuperacao() {
     this.removerFocoAtual();
 
     if (!this.email) {
-      await showTopToast(
-        this.toastCtrl,
-        'Por favor, informe seu e-mail.',
-        'danger',
+      await this.exibirErroRecuperarSenha(
+        'Por favor, preencha o e-mail.',
       );
       return;
     }
 
-    await showTopToast(
-      this.toastCtrl,
-      'Se o e-mail estiver cadastrado, você receberá um link em instantes.',
-      'success',
-    );
+    if (!isValidEmail(this.email)) {
+      await this.exibirErroRecuperarSenha('Por favor, insira um e-mail válido.');
+      return;
+    }
 
-    this.navCtrl.navigateBack('/login');
+    try {
+      await this.authService.recuperarSenha(this.email);
+      await showTopToast(
+        this.toastCtrl,
+        'Se o e-mail estiver cadastrado, você receberá um link em instantes.',
+        'success',
+      );
+      // Voltar para a tela de login após enviar o e-mail de recuperação
+      this.navCtrl.navigateBack('/login');
+    } catch (error: any) {
+      if (error?.code === 'auth/user-not-found') {
+        await showTopToast(
+          this.toastCtrl,
+          'Se o e-mail estiver cadastrado, você receberá um link em instantes.',
+          'success',
+        );
+      } else if (error?.code === 'auth/invalid-email') {
+        await showTopToast(
+          this.toastCtrl,
+          'Por favor, insira um e-mail válido.',
+          'danger',
+        );
+      } else {
+        await showTopToast(
+          this.toastCtrl,
+          'Ocorreu um erro ao enviar o e-mail de recuperação. Tente novamente.',
+          'danger',
+        );
+      }
+    }
   }
 }
